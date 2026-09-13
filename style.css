@@ -1,7 +1,7 @@
 :root {
-    --main: #0b0c2b;
+    --main: #151746;
     --secondary: #dba5e4;
-    --highlight: #ddff8f;
+    --highlight: #d3f584;
     --text-color: #d9cebf;
     --border-radius: 5px;
 }
@@ -9,20 +9,23 @@
 @font-face {
     font-family: 'Victor Mono';
     font-weight: 100 - 700;
-    src: url('assets/fonts/VictorMono-VariableFont_wght.ttf');
+    src: url('assets/fonts/Jost-VariableFont_wght.ttf');
 }
 
 body,
 html {
     height: 100%;
+    background-color: var(--main);
 }
 
 * {
     font-family: 'Victor Mono';
-    font-weight: 600;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: var(--secondary);
+    font-weight: 500;
+    list-style: none;
 }
 
 nav ul {
@@ -32,18 +35,37 @@ nav ul {
     justify-content: space-around;
 }
 
+ul > li > a,
+li {
+    color: var(--highlight);
+}
+
 a,
 a:visited {
-    color: black;
+    color: white;
     text-decoration: none;
 }
 
+h1 {
+    margin-bottom: 10vh;
+}
+
+h1,
+h2 {
+    text-shadow: 1px 1px var(--highlight);
+}
+
+h3 {
+    margin-bottom: 20px;
+}
+
 header {
-    height: 50vh;
+    height: 35vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    border: 5px solid black;
+    align-items: end;
+    border-top: 5px solid var(--highlight);
+    border-bottom: 5px solid var(--highlight);
     margin: 20px 0 50px 0;
 }
 
@@ -53,15 +75,44 @@ img {
 
 hr {
     width: 65vw;
-    background: linear-gradient(to left, #030124, #fbfdfd);
+    background: linear-gradient(to right, var(--highlight), var(--main));
     height: 2px;
     border: none;
-}
-
-h3 {
-    text-decoration: underline;
+    margin-bottom: 20px;
 }
 
 span {
-    color: red;
+    color: #bf0603;
+    font-weight: 600;
 }
+
+section {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+#skills > li {
+    margin-right: 10px;
+    justify-content: space-evenly;
+}
+
+.focus-section {
+    background-color: #202370;
+    border-radius: 5px;
+    box-shadow: 30px 50px 100px #5422b9 inset;
+}
+
+div {
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+/* opacity: 0.33; */

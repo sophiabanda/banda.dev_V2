@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('modal')
-    const modalBody = document.getElementById('modal-body')
-    const buttons = document.querySelectorAll('button[data-target]')
-    const closeBtn = document.getElementsByClassName('close')[0]
+    const focusArea = document.getElementsByTagName('div')
     const h1Text = `Hi. I'm<br> Sophia Banda.`
     let i = 0
 
@@ -23,35 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
 
-    buttons.forEach((button) => {
-        button.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target')
-            const targetContent = document.getElementById(targetId).innerHTML
-
-            modalBody.innerHTML = ''
-
-            modalBody.innerHTML = targetContent
-
-            if (targetId === 'work') {
-                modalBody.classList.add('scrollable-section')
-            } else {
-                modalBody.classList.remove('scrollable-section')
-            }
-
-            if (modalBody.innerHTML.trim() !== '') {
-                modal.style.display = 'flex'
-            }
-        })
-    })
-
-    closeBtn.addEventListener('click', function () {
-        modal.style.display = 'none'
-    })
-
-    window.addEventListener('click', function (event) {
-        if (event.target == modal) {
-            modal.style.display = 'none'
-        }
+    focusArea.addEventListener('click', (e) => {
+        focusArea.classList.add('focus-section')
     })
 })
 
