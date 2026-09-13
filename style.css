@@ -2,7 +2,7 @@
     --main: #151746;
     --secondary: #dba5e4;
     --highlight: #d3f584;
-    --text-color: #d9cebf;
+    --highlight-secondary: #bf0603;
     --border-radius: 5px;
 }
 
@@ -82,7 +82,7 @@ hr {
 }
 
 span {
-    color: #bf0603;
+    color: var(--highlight-secondary);
     font-weight: 600;
 }
 
@@ -116,3 +116,11 @@ div {
 }
 
 /* opacity: 0.33; */
+
+/*Will need a max width for main content at larger view sizes */
+
+@media (hover: hover) and (pointer: fine) {
+    nav a:hover {
+        background: var(--highlight-secondary);
+    }
+}
