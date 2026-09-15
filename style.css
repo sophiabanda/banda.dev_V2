@@ -7,6 +7,9 @@
     --border-radius: 5px;
 }
 
+/* Mac Silver: #DFE0E2
+Yamazaki wood: #F8DEB7 */
+
 @font-face {
     font-family: 'Victor Mono';
     font-weight: 100 - 700;
@@ -81,7 +84,7 @@ header {
     margin: 3vh 0 3vh 0;
 }
 
-img {
+svg {
     max-height: 30vh;
 }
 
