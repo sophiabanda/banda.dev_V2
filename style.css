@@ -5,22 +5,15 @@
     --highlight: #ddff8f;
     --highlight-secondary: #f2211d;
     --border-radius: 5px;
+    --enhance-panel: rgba(11, 12, 43, 0.78);
+    --enhance-line: rgba(221, 255, 143, 0.22);
+    --enhance-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
 }
-
-/* Mac Silver: #DFE0E2
-Yamazaki wood: #F8DEB7 */
 
 @font-face {
     font-family: 'Victor Mono';
     font-weight: 100 - 700;
     src: url('assets/fonts/Jost-VariableFont_wght.ttf');
-}
-
-body,
-html {
-    height: 100%;
-    background-color: var(--main);
-    scroll-behavior: smooth;
 }
 
 * {
@@ -33,20 +26,107 @@ html {
     list-style: none;
 }
 
+html {
+    scroll-padding-top: 88px;
+    scroll-behavior: smooth;
+}
+
+body {
+    height: 100%;
+    background-color: var(--main);
+    scroll-padding-top: 88px;
+    overflow-x: clip;
+    height: auto;
+    min-height: 100%;
+    background-image:
+        radial-gradient(
+            circle at 20% 18%,
+            rgba(221, 255, 143, 0.07),
+            transparent 40rem
+        ),
+        radial-gradient(
+            circle at 15% 70%,
+            rgba(219, 165, 228, 0.08),
+            transparent 30rem
+        );
+}
+
+body::before {
+    /* scroll-progress bar*/
+    background: var(--highlight);
+    content: '';
+    height: 3px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    /* JavaScript updates this custom property from 0 to 1 while scrolling. */
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: left center;
+    transition: transform 120ms linear;
+    width: 100%;
+    z-index: 20;
+}
+
+nav {
+    /* Turns the original nav into a floating, glass-like control surface. */
+    backdrop-filter: blur(16px);
+    background: var(--enhance-panel);
+    border: 1px solid var(--enhance-line);
+    border-radius: 999px;
+    box-shadow: var(--enhance-shadow);
+    /* Auto margins keep it centered, including on narrow mobile screens. */
+    left: auto;
+    margin: 0 auto;
+    max-width: 760px;
+    padding: 7px;
+    position: sticky;
+    top: 14px;
+    transform: none;
+    width: min(calc(100% - 28px), 760px);
+    z-index: 10;
+}
+
 nav ul {
     display: flex;
-    margin-top: 20px;
     list-style: none;
     justify-content: space-around;
+    gap: 4px;
+    margin: 0;
 }
 
 nav li {
-    border-bottom: 2px solid var(--highlight-secondary);
+    border: 0;
+    flex: 1;
 }
 
-nav ul > li > a,
-li {
+nav a {
+    border-radius: 999px;
+    display: block;
+    padding: 9px 12px;
+    text-align: center;
+    transition:
+        background-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
     color: var(--highlight);
+}
+
+nav a[aria-current='true']:not(:hover):not(:focus-visible) {
+    /* JavaScript marks the section currently in view; focus gets the same
+       treatment without overriding an active hover state. */
+    background: var(--highlight);
+    color: var(--main);
+    outline: none;
+}
+
+nav a:hover,
+nav a:focus-visible {
+    /* Hover and keyboard focus temporarily take priority over the green
+       section state, so the red interaction state can turn on and off cleanly. */
+    background: rgba(242, 33, 29, 0.82);
+    color: var(--main);
+    outline: none;
+    transform: translateY(-2px);
 }
 
 a,
@@ -82,6 +162,7 @@ header {
     border-top: 5px solid var(--highlight);
     border-bottom: 5px solid var(--highlight);
     margin: 3vh 0 3vh 0;
+    position: relative;
 }
 
 svg {
@@ -102,6 +183,34 @@ hr {
     border-radius: 55%;
 }
 
+.resume-item {
+    border: 1px solid transparent;
+    position: relative;
+    transition:
+        opacity 500ms ease,
+        transform 500ms ease,
+        border-color 300ms ease,
+        background-color 300ms ease;
+}
+
+.js-enhanced .resume-item {
+    /* Only apply the hidden starting state when the enhancement script loaded;
+       content remains visible if JavaScript is unavailable. */
+    opacity: 0;
+    transform: translateY(22px);
+}
+
+.js-enhanced .resume-item.is-visible {
+    /* The observer adds this class once an entry enters the viewport. */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.resume-item.in-focus {
+    /* Preserves and sharpens the original script's in-focus treatment. */
+    border-color: var(--enhance-line);
+}
+
 section {
     padding: 10px;
     display: flex;
@@ -118,10 +227,25 @@ p {
     justify-content: space-evenly;
     align-items: center;
     margin-top: 5%;
+    gap: 10px;
 }
 
 #skills > li {
     justify-content: space-evenly;
+    border: 1px solid var(--enhance-line);
+    border-radius: 999px;
+    padding: 6px 10px;
+    transition:
+        border-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+#skills > li:hover {
+    /* A playful tilt and lift gives the tags a little personality. */
+    border-color: var(--highlight);
+    color: var(--highlight);
+    transform: rotate(-2deg) translateY(-3px);
 }
 
 .resume-item {
@@ -143,10 +267,69 @@ p {
     align-items: center;
     justify-content: center;
     gap: 3vw;
+    flex-wrap: wrap;
+}
+
+#contact-links a {
+    /* Gives links a clear animated underline target on interaction. */
+    border-bottom: 1px solid transparent;
+    padding: 8px 2px;
+    transition:
+        border-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+#contact-links a:hover,
+#contact-links a:focus-visible {
+    /* Hover and keyboard focus share one visible interaction state. */
+    border-color: var(--highlight);
+    color: var(--highlight);
+    transform: translateY(-2px);
 }
 
 .star {
     color: var(--highlight-secondary);
+}
+
+#back-to-top {
+    /* This button is created by enhancements.js and stays hidden until the
+       visitor has scrolled far enough to benefit from it. */
+    align-items: center;
+    background: var(--highlight);
+    border: 0;
+    border-radius: 50%;
+    bottom: 20px;
+    box-shadow: var(--enhance-shadow);
+    color: var(--main);
+    cursor: pointer;
+    display: flex;
+    font-size: 1.1rem;
+    height: 42px;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 20px;
+    transform: translateY(10px);
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+    width: 42px;
+    z-index: 9;
+}
+
+#back-to-top.is-visible {
+    /* JavaScript toggles this class after roughly 70% of one viewport. */
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+#back-to-top:focus-visible {
+    /* Keeps keyboard focus visible against the bright button background. */
+    outline: 2px solid var(--highlight-secondary);
+    outline-offset: 3px;
 }
 
 footer {
@@ -175,8 +358,40 @@ footer {
     }
 }
 
-/* mobile */
-@media (min-width: 900) {
+@media (max-width: 600px) {
+    /* Reduce nav and floating-button dimensions on small screens. */
+    nav a {
+        font-size: 0.72rem;
+        padding: 8px 4px;
+    }
+
+    header::after {
+        right: 8%;
+    }
+
+    #back-to-top {
+        bottom: 14px;
+        right: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Respect the user's operating-system motion preference. */
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .js-enhanced .resume-item {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 /* Laptop/ desktop */

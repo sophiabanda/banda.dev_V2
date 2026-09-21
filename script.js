@@ -1,11 +1,36 @@
+// Collect the existing page elements that the enhancement layer will control.
 const items = document.querySelectorAll('.resume-item')
 const h1 = document.querySelector('h1')
+const enhancedBody = document.body
+const navLinks = [...document.querySelectorAll('nav a[href^="#"]')]
+const sections = navLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean)
+const resumeItems = document.querySelectorAll('.resume-item')
 
+const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+).matches
+
+// This class gates the reveal animation so the page still works without JS.
+if (enhancedBody) enhancedBody.classList.add('js-enhanced')
+
+// Build the back-to-top control in JavaScript so no extra HTML is required.
+const backToTop = document.createElement('button')
+
+backToTop.id = 'back-to-top'
+backToTop.type = 'button'
+backToTop.setAttribute('aria-label', 'Back to top')
+backToTop.innerHTML = '&uarr;'
+
+document.body.append(backToTop)
+
+// Type the main heading.
 const h1Text = `Hi. I'm<br> Sophia Banda.`
 let i = 0
 
 function typeEffect() {
-    if (i >= h1Text.length) return
+    if (!h1 || i >= h1Text.length) return
 
     const currentChar = h1Text.charAt(i)
 
@@ -22,7 +47,122 @@ function typeEffect() {
 
 typeEffect()
 
-const observer = new IntersectionObserver(
+// Choose the section whose heading has most recently crossed a reading line
+// near the top of the viewport.
+const updateActiveSection = () => {
+    if (!sections.length) return
+
+    const scrollPosition = window.scrollY
+    const viewportHeight = window.innerHeight
+    const documentHeight = document.documentElement.scrollHeight
+
+    // Consider the page "at the bottom" when there are only a few pixels
+    // left to scroll. This prevents the final section from getting stuck
+    // as inactive when its heading cannot reach the reading line.
+    const isAtBottom = scrollPosition + viewportHeight >= documentHeight - 5
+
+    let activeSection = sections[0]
+
+    if (isAtBottom) {
+        // The final section becomes active at the bottom of the page.
+        activeSection = sections[sections.length - 1]
+    } else {
+        // Normally, use a reading line 25% down the viewport.
+        const readingLine = scrollPosition + viewportHeight * 0.25
+
+        sections.forEach((section) => {
+            const sectionTop =
+                section.getBoundingClientRect().top + scrollPosition
+
+            if (sectionTop <= readingLine) {
+                activeSection = section
+            }
+        })
+    }
+
+    navLinks.forEach((link) => {
+        const isCurrent = link.getAttribute('href') === `#${activeSection.id}`
+
+        // aria-current is both the CSS styling hook and an accessibility cue.
+        link.setAttribute('aria-current', isCurrent ? 'true' : 'false')
+    })
+}
+
+// Update the active nav link immediately when a nav link is clicked.
+// Smooth scrolling can take a moment to reach the target, so waiting only
+// for scroll position would briefly leave the previous section highlighted.
+navLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+        const target = document.querySelector(link.getAttribute('href'))
+
+        if (!target) return
+
+        navLinks.forEach((navLink) => {
+            navLink.setAttribute(
+                'aria-current',
+                navLink === link ? 'true' : 'false',
+            )
+        })
+    })
+})
+
+// Update the top progress bar, active nav link, and back-to-top button
+// whenever the visitor scrolls.
+const updateScrollState = () => {
+    const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight
+
+    // Divide the current scroll position by the total scrollable distance.
+    const progress =
+        scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0
+
+    // CSS consumes this value in body::before with transform: scaleX(...).
+    document.documentElement.style.setProperty('--scroll-progress', progress)
+
+    updateActiveSection()
+
+    backToTop.classList.toggle(
+        'is-visible',
+        window.scrollY > window.innerHeight * 0.7,
+    )
+}
+
+// passive tells the browser this listener will not cancel scrolling,
+// helping scrolling stay smooth on touch devices.
+window.addEventListener('scroll', updateScrollState, {
+    passive: true,
+})
+
+updateScrollState()
+
+// Scroll back to the top when the button is clicked.
+backToTop.addEventListener('click', () => {
+    // Avoid animated scrolling when the user has requested reduced motion.
+    window.scrollTo({
+        top: 0,
+        behavior: reducedMotion ? 'auto' : 'smooth',
+    })
+})
+
+// Reveal each resume item the first time a small portion enters the viewport.
+const revealObserver = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible')
+
+                // Stop watching once revealed; the animation only needs to run once.
+                revealObserver.unobserve(entry.target)
+            }
+        })
+    },
+    { threshold: 0.08 },
+)
+
+resumeItems.forEach((item) => revealObserver.observe(item))
+
+// Track which resume item is currently in focus.
+const focusObserver = new IntersectionObserver(
     (entries) => {
         entries.forEach((entry) => {
             entry.target.classList.toggle('in-focus', entry.isIntersecting)
@@ -33,4 +173,4 @@ const observer = new IntersectionObserver(
     },
 )
 
-items.forEach((item) => observer.observe(item))
+items.forEach((item) => focusObserver.observe(item))
