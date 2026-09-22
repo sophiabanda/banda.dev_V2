@@ -1,4 +1,3 @@
-// Collect the existing page elements that the enhancement layer will control.
 const items = document.querySelectorAll('.resume-item')
 const h1 = document.querySelector('h1')
 const enhancedBody = document.body
@@ -106,6 +105,14 @@ navLinks.forEach((link) => {
     })
 })
 
+// Resets URL to / when the top of the site is reached either by scroll
+// or by pressing the to-the-top button
+const clearUrlHashAtTop = () => {
+    if (window.scrollY <= 1 && window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname)
+    }
+}
+
 // Update the top progress bar, active nav link, and back-to-top button
 // whenever the visitor scrolls.
 const updateScrollState = () => {
@@ -120,6 +127,8 @@ const updateScrollState = () => {
     document.documentElement.style.setProperty('--scroll-progress', progress)
 
     updateActiveSection()
+
+    clearUrlHashAtTop()
 
     backToTop.classList.toggle(
         'is-visible',
