@@ -14,7 +14,6 @@ const reducedMotion = window.matchMedia(
 // This class gates the reveal animation so the page still works without JS.
 if (enhancedBody) enhancedBody.classList.add('js-enhanced')
 
-// Build the back-to-top control in JavaScript so no extra HTML is required.
 const backToTop = document.createElement('button')
 
 backToTop.id = 'back-to-top'
@@ -24,7 +23,6 @@ backToTop.innerHTML = '&uarr;'
 
 document.body.append(backToTop)
 
-// Type the main heading.
 const h1Text = `Hi. I'm<br> Sophia Banda.`
 let i = 0
 
@@ -46,27 +44,19 @@ function typeEffect() {
 
 typeEffect()
 
-// Choose the section whose heading has most recently crossed a reading line
-// near the top of the viewport.
 const updateActiveSection = () => {
     if (!sections.length) return
 
     const scrollPosition = window.scrollY
     const viewportHeight = window.innerHeight
     const documentHeight = document.documentElement.scrollHeight
-
-    // Consider the page "at the bottom" when there are only a few pixels
-    // left to scroll. This prevents the final section from getting stuck
-    // as inactive when its heading cannot reach the reading line.
     const isAtBottom = scrollPosition + viewportHeight >= documentHeight - 5
 
     let activeSection = sections[0]
 
     if (isAtBottom) {
-        // The final section becomes active at the bottom of the page.
         activeSection = sections[sections.length - 1]
     } else {
-        // Normally, use a reading line 25% down the viewport.
         const readingLine = scrollPosition + viewportHeight * 0.25
 
         sections.forEach((section) => {
@@ -153,14 +143,12 @@ backToTop.addEventListener('click', () => {
     })
 })
 
-// Reveal each resume item the first time a small portion enters the viewport.
 const revealObserver = new IntersectionObserver(
     (entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible')
 
-                // Stop watching once revealed; the animation only needs to run once.
                 revealObserver.unobserve(entry.target)
             }
         })
@@ -170,7 +158,6 @@ const revealObserver = new IntersectionObserver(
 
 resumeItems.forEach((item) => revealObserver.observe(item))
 
-// Track which resume item is currently in focus.
 const focusObserver = new IntersectionObserver(
     (entries) => {
         entries.forEach((entry) => {
