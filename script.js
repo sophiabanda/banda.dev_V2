@@ -173,6 +173,16 @@ const focusObserver = new IntersectionObserver(
 
 items.forEach((item) => focusObserver.observe(item))
 
+if (footer && smallWave) {
+    footer.addEventListener('click', () => {
+        smallWave.classList.remove('waving')
+
+        void smallWave.offsetWidth
+
+        smallWave.classList.add('waving')
+    })
+}
+
 const footerObserver = new IntersectionObserver(
     ([entry]) => {
         if (entry.isIntersecting) {
