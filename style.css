@@ -392,6 +392,10 @@ footer {
         opacity: 1;
         transform: none;
     }
+
+    .waving {
+        animation: none;
+    }
 }
 
 /* Laptop/ desktop */
@@ -422,5 +426,44 @@ footer {
     h3,
     a {
         font-size: x-large;
+    }
+}
+
+/* Animations */
+.wave {
+    display: inline-block; /* Required for transform scaling/rotation */
+    transform-origin: 70% 70%; /* Pivot point near the bottom-left of the wrist */
+}
+
+.waving {
+    animation-name: wave-animation; /* Refers to the keyframes below */
+    animation-duration: 2.5s; /* Time it takes to complete one loop */
+    animation-iteration-count: 2; /* Keep waving indefinitely */
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    10% {
+        transform: rotate(14deg);
+    }
+    20% {
+        transform: rotate(-8deg);
+    }
+    30% {
+        transform: rotate(14deg);
+    }
+    40% {
+        transform: rotate(-4deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+    60% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(0deg);
     }
 }

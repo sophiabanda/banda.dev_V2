@@ -6,6 +6,8 @@ const sections = navLinks
     .map((link) => document.querySelector(link.getAttribute('href')))
     .filter(Boolean)
 const resumeItems = document.querySelectorAll('.resume-item')
+const footer = document.querySelector('footer')
+const smallWave = document.querySelector('.wave')
 
 const reducedMotion = window.matchMedia(
     '(prefers-reduced-motion: reduce)',
@@ -170,3 +172,16 @@ const focusObserver = new IntersectionObserver(
 )
 
 items.forEach((item) => focusObserver.observe(item))
+
+const footerObserver = new IntersectionObserver(
+    ([entry]) => {
+        if (entry.isIntersecting) {
+            smallWave.classList.add('waving')
+            footerObserver.unobserve(entry.target)
+        }
+    },
+    { threshold: 0.1 },
+)
+if (footer && smallWave) {
+    footerObserver.observe(footer)
+}
